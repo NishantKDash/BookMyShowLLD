@@ -6,6 +6,7 @@ import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
@@ -35,7 +36,7 @@ public  class Ticket extends BaseModel{
 	// seat will be a part of another ticket
 	
 	// If cancellation not supportted then , 1 : M
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	private List<ShowSeat> showSeats;
 	private double totalAmount;
 	

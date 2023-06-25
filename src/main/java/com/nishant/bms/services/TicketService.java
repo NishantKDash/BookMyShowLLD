@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,7 @@ import com.nishant.bms.repository.TicketRepository;
 import com.nishant.bms.repository.UserRepository;
 
 @Service
+@EnableScheduling
 public class TicketService {
    
 	private TicketRepository ticketRepository;
@@ -42,6 +45,7 @@ public class TicketService {
 		
 		//List<ShowSeat> showSeats = showSeatIds.stream().map(id ->{ShowSeat showSeat = showSeatRepository.getReferenceById(id); return showSeat;}).collect(Collectors.toList());
     	List<ShowSeat> showSeats = showSeatRepository.findByIdIn(showSeatIds);
+    	System.out.println("lkdjfkdjfk" + showSeats.size());
 		//check if each of them are available
 		for(ShowSeat showSeat : showSeats)
 			if(!showSeat.getStats().equals(ShowSeatState.AVAILABLE))
@@ -65,6 +69,24 @@ public class TicketService {
 		
 		return ticketRepository.save(ticket);
 	}
+    
+    @Scheduled(fixedRate = 5000)
+    public void ticketCronJob()
+    {
+    	List<Ticket> tickets = ticketRepository.findAll();
+    	
+    	for(Ticket ticket : tickets)
+    	{
+    	   List<ShowSeat> showSeats = ticket.getShowSeats();
+    	   for(ShowSeat showSeat : showSeats)
+    	   {
+    		   showSeat.setStats(ShowSeatState.AVAILABLE);
+    		   showSeatRepository.save(showSeat);
+    	   }
+    	}
+    }
+    
+    
 	
 	
 }

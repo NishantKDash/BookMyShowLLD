@@ -20,9 +20,9 @@ public class TicketController {
 		this.ticketService = ticketService;
 	}
 	
-	public Ticket bookTicket(Long showId , List<Long> showSeatIds , Long userId)
+	public Ticket bookTicket(Long showId , List<Long> showSeatIds , Long userId) throws Exception
 	{
-		 return null;
+		 return ticketService.bookTicket(showId, showSeatIds, userId);
 	}
 
 }
